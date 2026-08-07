@@ -1,0 +1,23 @@
+### 1. Quiz abrufen (GET)
+GET http://localhost:8889/api/quizzes/1
+
+### get all quizzes
+GET http://localhost:8889/api/quizzes
+
+### Post new Quiz
+POST http://localhost:8889/api/quizzes
+Content-Type: application/json
+
+{
+  "title": "The Java Logo",
+  "text": "What is depicted on the Java logo?",
+  "options": ["Robot","Tea leaf","Cup of coffee","Bug"],
+  "answer": 2
+}
+
+
+### 2. Richtige Antwort senden (POST answer = 2)
+POST http://localhost:8889/api/quiz?answer=2
+
+### 3. Falsche Antwort senden (POST answer = 1)
+POST http://localhost:8889/api/quiz?answer=1
