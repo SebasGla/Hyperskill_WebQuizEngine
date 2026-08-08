@@ -23,9 +23,7 @@ public class QuizController {
     public ResponseEntity<QuizGetter> postQuiz(@RequestBody QuizBuilder quizBuilder){
         Quiz newQuiZ = new Quiz(quizBuilder);
         //Save with the Quiz with a generated Id
-
         quizRepository.save(newQuiZ);
-
 
         QuizGetter quizResponse = new QuizGetter(newQuiZ.getId(), newQuiZ.getTitle(), newQuiZ.getText(), newQuiZ.getOptions());
         return new ResponseEntity<>(quizResponse, HttpStatus.OK);
@@ -43,19 +41,16 @@ public class QuizController {
 
     @GetMapping("/{id}")
     public ResponseEntity<QuizGetter> getQuiz(@PathVariable int id){
-        Optional<Quiz> optionalQuiz = quizRepository.findById(id);
-        return optionalQuiz
-                .map(quiz -> {
-                    QuizGetter dto = new QuizGetter(quiz.getId(), quiz.getTitle(), quiz.getText(), quiz.getOptions());
-                    return ResponseEntity.ok(dto); // Status 200 ok
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build()); // Status 404 Not Found
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new QuizNotFoundException(id));
+        QuizGetter dto = new QuizGetter(quiz.getId(), quiz.getTitle(), quiz.getText(), quiz.getOptions());
+        return ResponseEntity.ok(dto); // Status 200 ok
     }
 
-    @PostMapping("/{id}/solve?answer={index}")
-    public ResponseEntity<Answer> postAnswer(@RequestParam int id, @RequestParam int index){
-
-        return new ResponseEntity<>(new Answer()
+    @PostMapping("/{id}/solve")
+    public ResponseEntity<Answer> postAnswer(@PathVariable int id, @RequestParam("answer") int index){
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new QuizNotFoundException(id));
+        Answer dto = new Answer(quiz.checkAnswer(index));
+        return ResponseEntity.ok(dto);
     }
 
 
