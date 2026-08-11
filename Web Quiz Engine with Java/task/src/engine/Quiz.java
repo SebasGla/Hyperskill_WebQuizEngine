@@ -8,7 +8,7 @@ public class Quiz {
     private String title;
     private String text;
     private List<String> options;
-    private int answer;
+    private List<Integer> answer;
 
     public Quiz(QuizBuilder quizB){
         this.title = quizB.title();
@@ -17,8 +17,8 @@ public class Quiz {
         this.answer = quizB.answer();
     }
 
-    public boolean checkAnswer(int answer){
-        return answer == this.answer;
+    public boolean checkAnswer(List<Integer> answer){
+        return this.answer.equals(answer);
     }
 
     public Integer getId() {
@@ -41,7 +41,7 @@ public class Quiz {
         return options;
     }
 
-    public int getAnswer() {
+    public List<Integer> getAnswer() {
         return answer;
     }
 

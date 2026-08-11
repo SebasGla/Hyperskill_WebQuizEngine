@@ -1,5 +1,7 @@
 package engine;
 
 import java.util.List;
+import jakarta.validation.constraints.*;
 
-public record QuizBuilder(String title, String text, List<String> options, int answer) {}
+public record QuizBuilder(@NotNull String title,@NotNull String text,@Size(min = 2) List<String> options, List<Integer> answer) {
+}

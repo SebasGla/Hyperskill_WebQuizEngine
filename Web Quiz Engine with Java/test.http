@@ -12,12 +12,32 @@ Content-Type: application/json
   "title": "The Java Logo",
   "text": "What is depicted on the Java logo?",
   "options": ["Robot","Tea leaf","Cup of coffee","Bug"],
-  "answer": 2
+  "answer": [2]
+}
+
+### Post new Quiz, but title is missing
+POST http://localhost:8889/api/quizzes
+Content-Type: application/json
+
+{
+  "text": "What is depicted on the Java logo?",
+  "options": ["Robot","Tea leaf","Cup of coffee","Bug"],
+  "answer": [2]
 }
 
 
-### 2. Richtige Antwort senden (POST answer = 2)
-POST http://localhost:8889/api/quizzes/1/solve?answer=2
+### Post right answer
+POST http://localhost:8889/api/quizzes/1/solve
+Content-Type: application/json
 
-### 3. Falsche Antwort senden (POST answer = 1)
-POST http://localhost:8889/api/quizzes/1/solve?answer=1
+{
+      "answer": [2]
+}
+
+### Post wrong answer
+POST http://localhost:8889/api/quizzes/1/solve
+Content-Type: application/json
+
+{
+      "answer": [0]
+}

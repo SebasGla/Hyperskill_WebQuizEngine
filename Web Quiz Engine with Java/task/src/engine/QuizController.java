@@ -1,12 +1,10 @@
 package engine;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/quizzes")
@@ -20,7 +18,7 @@ public class QuizController {
     }
 
     @PostMapping
-    public ResponseEntity<QuizGetter> postQuiz(@RequestBody QuizBuilder quizBuilder){
+    public ResponseEntity<QuizGetter> postQuiz(@Valid @RequestBody QuizBuilder quizBuilder){
         Quiz newQuiZ = new Quiz(quizBuilder);
         //Save with the Quiz with a generated Id
         quizRepository.save(newQuiZ);
@@ -47,9 +45,9 @@ public class QuizController {
     }
 
     @PostMapping("/{id}/solve")
-    public ResponseEntity<Answer> postAnswer(@PathVariable int id, @RequestParam("answer") int index){
+    public ResponseEntity<AnswerResponse> postAnswer(@PathVariable int id,@Valid @RequestBody AnswerReceive reqAns){
         Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new QuizNotFoundException(id));
-        Answer dto = new Answer(quiz.checkAnswer(index));
+        AnswerResponse dto = new AnswerResponse(quiz.checkAnswer(reqAns.answerReceived()));
         return ResponseEntity.ok(dto);
     }
 
