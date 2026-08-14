@@ -58,10 +58,14 @@ project(':util') {
     }
 }
 
-configure(subprojects.findAll {it.name != 'util'}) {
+evaluationDependsOn(':util')
+
+configure(subprojects.findAll { it.name != 'util' }) {
     dependencies {
-        testImplementation project(':util').sourceSets.main.output
-        testImplementation project(':util').sourceSets.test.output
+        testImplementation project(':util')
+        // findProject(':util') greift direkt auf das echte Project-Objekt zu:
+        testImplementation files(findProject(':util').layout.buildDirectory.dir("classes/java/main"))
+        testImplementation files(findProject(':util').layout.buildDirectory.dir("classes/java/test"))
     }
 }
 

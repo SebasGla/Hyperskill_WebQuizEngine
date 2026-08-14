@@ -10,10 +10,11 @@ import java.util.List;
 @RequestMapping("/api/quizzes")
 public class QuizController {
 
-    private final InMemoryQuizRepository quizRepository;
+    private final QuizRepository quizRepository;
 
     //Constuctor Injektion
-    public QuizController(InMemoryQuizRepository quizRepository){
+    public QuizController(QuizRepository quizRepository){
+
         this.quizRepository = quizRepository;
     }
 
@@ -29,7 +30,7 @@ public class QuizController {
 
     @GetMapping
     public ResponseEntity<List<QuizGetter>> getAllQuizzes(){
-        List<Quiz> quizList = quizRepository.findAll();
+        List<Quiz> quizList = (List<Quiz>) quizRepository.findAll();
         List<QuizGetter> quizGetterList = quizList.stream()
                 .map(q -> new QuizGetter(q.getId(), q.getTitle(), q.getText(), q.getOptions()))
                 .toList();

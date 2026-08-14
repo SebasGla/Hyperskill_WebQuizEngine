@@ -1,21 +1,36 @@
 package engine;
 
+import jakarta.persistence.*;
+
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Quiz {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
     private String text;
+
+    @ElementCollection
     private List<String> options;
+
+    @ElementCollection
     private List<Integer> answer;
 
+    //Use QuizBuilder as DTO for now. Should change to a Mapper later
     public Quiz(QuizBuilder quizB){
         this.title = quizB.title();
         this.text = quizB.text();
         this.options = quizB.options();
         this.answer = quizB.answer();
     }
+
+    public Quiz() {
+
+    }
+
 
     public boolean checkAnswer(List<Integer> answer){
         return this.answer.equals(answer);
