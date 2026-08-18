@@ -2,6 +2,7 @@ package engine;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,7 +34,14 @@ public class Quiz {
 
 
     public boolean checkAnswer(List<Integer> answer){
-        return this.answer.equals(answer);
+        if (this.answer == null || answer == null) {
+            return Objects.equals(this.answer, answer);
+        }
+
+
+        List<Integer> currentAnswer = new ArrayList<>(this.answer);
+
+        return currentAnswer.equals(answer);
     }
 
     public Integer getId() {

@@ -4,6 +4,9 @@ GET http://localhost:8889/api/quizzes/1
 ### get all quizzes
 GET http://localhost:8889/api/quizzes
 
+### POST /api/quizzes without id pathVariable
+POST http://localhost:8889/api/quizzes
+
 ### Post new Quiz
 POST http://localhost:8889/api/quizzes
 Content-Type: application/json
