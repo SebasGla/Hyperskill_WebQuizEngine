@@ -24,7 +24,7 @@ public class QuizController {
         //Save with the Quiz with a generated Id
         quizRepository.save(newQuiZ);
 
-        QuizGetter quizResponse = new QuizGetter(newQuiZ.getId(), newQuiZ.getTitle(), newQuiZ.getText(), newQuiZ.getOptions());
+        QuizGetter quizResponse = QuizGetter.fromEntity(newQuiZ);
         return new ResponseEntity<>(quizResponse, HttpStatus.OK);
     }
 
@@ -32,7 +32,7 @@ public class QuizController {
     public ResponseEntity<List<QuizGetter>> getAllQuizzes(){
         List<Quiz> quizList = (List<Quiz>) quizRepository.findAll();
         List<QuizGetter> quizGetterList = quizList.stream()
-                .map(q -> new QuizGetter(q.getId(), q.getTitle(), q.getText(), q.getOptions()))
+                .map(QuizGetter::fromEntity)
                 .toList();
 
         return new ResponseEntity<>(quizGetterList, HttpStatus.OK);
@@ -41,7 +41,7 @@ public class QuizController {
     @GetMapping("/{id}")
     public ResponseEntity<QuizGetter> getQuiz(@PathVariable int id){
         Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new QuizNotFoundException(id));
-        QuizGetter dto = new QuizGetter(quiz.getId(), quiz.getTitle(), quiz.getText(), quiz.getOptions());
+        QuizGetter dto = QuizGetter.fromEntity(quiz);
         return ResponseEntity.ok(dto); // Status 200 ok
     }
 
