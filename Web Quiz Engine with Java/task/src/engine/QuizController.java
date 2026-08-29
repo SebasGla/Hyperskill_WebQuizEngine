@@ -3,7 +3,11 @@ package engine;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @RestController
@@ -11,16 +15,22 @@ import java.util.List;
 public class QuizController {
 
     private final QuizRepository quizRepository;
+    private final UserRepository userRepository;
 
     //Constuctor Injektion
-    public QuizController(QuizRepository quizRepository){
-
+    public QuizController(QuizRepository quizRepository, UserRepository userRepository){
         this.quizRepository = quizRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping
-    public ResponseEntity<QuizGetter> postQuiz(@Valid @RequestBody QuizBuilder quizBuilder){
-        Quiz newQuiZ = new Quiz(quizBuilder);
+    public ResponseEntity<QuizGetter> postQuiz(@Valid @RequestBody QuizBuilder quizBuilder,
+                                               @AuthenticationPrincipal UserDetails userDetails){
+
+        User currentUser = userRepository.findUserByEmail(userDetails.getUsername()).
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        Quiz newQuiZ = new Quiz(quizBuilder, currentUser);
         //Save with the Quiz with a generated Id
         quizRepository.save(newQuiZ);
 
@@ -52,6 +62,10 @@ public class QuizController {
         return ResponseEntity.ok(dto);
     }
 
+    @DeleteMapping("/api/quizzes/{id}")
+    public HttpStatus deleteQuiz(){
+
+    }
 
 
 }

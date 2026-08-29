@@ -14,6 +14,11 @@ public class Quiz {
     private String title;
     private String text;
 
+    //One User can have many quizzes
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user")
+    private User author;
+
     @ElementCollection
     private List<String> options;
 
@@ -21,11 +26,12 @@ public class Quiz {
     private List<Integer> answer;
 
     //Use QuizBuilder as DTO for now. Should change to a Mapper later
-    public Quiz(QuizBuilder quizB){
+    public Quiz(QuizBuilder quizB, User user){
         this.title = quizB.title();
         this.text = quizB.text();
         this.options = quizB.options();
         this.answer = quizB.answer();
+        this.author = user;
     }
 
     public Quiz() {
