@@ -18,10 +18,11 @@ public class SecurityConfig {
             .csrf(configurer -> configurer.disable()) // for POST requests via Postman
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
-                    .requestMatchers("/{id}").authenticated()
-                    .requestMatchers("/api/quizzes").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/actuator/shutdown").permitAll() //for hyperskill tester
+                    .requestMatchers("/api/quizzes/**").authenticated()
                     .anyRequest().denyAll()
             );
+        return http.build();
     }
 
     @Bean

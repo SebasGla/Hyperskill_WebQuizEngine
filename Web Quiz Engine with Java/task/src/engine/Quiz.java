@@ -16,7 +16,7 @@ public class Quiz {
 
     //One User can have many quizzes
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "user_id")
     private User author;
 
     @ElementCollection
@@ -72,6 +72,14 @@ public class Quiz {
 
     public List<Integer> getAnswer() {
         return answer;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -62,9 +63,15 @@ public class QuizController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/api/quizzes/{id}")
-    public HttpStatus deleteQuiz(){
-
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteQuiz(@PathVariable int id,@AuthenticationPrincipal UserDetails userDetails){
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new QuizNotFoundException(id));
+        if (quiz.getAuthor().getEmail() == userDetails.getUsername()){
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
 

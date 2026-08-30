@@ -44,3 +44,14 @@ Content-Type: application/json
 {
       "answer": [0]
 }
+
+### Register User
+POST http://localhost:8889/api/register
+Content-Type: application/json
+
+{
+  "email": "user11@web.com",
+  "password": "password"
+}
+
+###

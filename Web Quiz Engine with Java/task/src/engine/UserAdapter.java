@@ -13,9 +13,12 @@ public class UserAdapter implements UserDetails {
     public UserAdapter(User user){
         this.user = user;
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getAuthority()));
+        return user.getAuthority() != null
+                ? List.of(new SimpleGrantedAuthority(user.getAuthority()))
+                : List.of();
     }
 
     @Override
