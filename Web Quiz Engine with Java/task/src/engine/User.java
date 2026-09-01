@@ -3,6 +3,8 @@ package engine;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -14,6 +16,9 @@ public class User {
 
     private String password;
     private String authority;
+
+    @ElementCollection
+    private List<CompletedQuiz> completedQuizzes;
 
     public Integer getId() {
         return id;
@@ -47,5 +52,11 @@ public class User {
         this.authority = authority;
     }
 
+    public void completeQuiz(int quizId, String dateTime){
+        this.completedQuizzes.add(new CompletedQuiz(quizId, dateTime));
+    }
 
+    public List<CompletedQuiz> getCompletedQuizzes() {
+        return completedQuizzes;
+    }
 }

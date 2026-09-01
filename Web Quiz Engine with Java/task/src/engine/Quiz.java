@@ -44,7 +44,6 @@ public class Quiz {
             return Objects.equals(this.answer, answer);
         }
 
-
         List<Integer> currentAnswer = new ArrayList<>(this.answer);
 
         return currentAnswer.equals(answer);

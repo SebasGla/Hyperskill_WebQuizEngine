@@ -1,6 +1,9 @@
 package engine;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/quizzes")
 public class QuizController {
-
+    private final int pageSize = 10;
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
 
@@ -40,13 +43,11 @@ public class QuizController {
     }
 
     @GetMapping
-    public ResponseEntity<List<QuizGetter>> getAllQuizzes(){
-        List<Quiz> quizList = (List<Quiz>) quizRepository.findAll();
-        List<QuizGetter> quizGetterList = quizList.stream()
-                .map(QuizGetter::fromEntity)
-                .toList();
+    public ResponseEntity<Page<QuizGetter>> getAllQuizzes(@RequestParam(defaultValue = "0") int page){
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<QuizGetter> quizGetterPage = quizRepository.findAll(pageable).map(QuizGetter::fromEntity);
 
-        return new ResponseEntity<>(quizGetterList, HttpStatus.OK);
+        return new ResponseEntity<>(quizGetterPage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -73,6 +74,19 @@ public class QuizController {
         else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+    }
+
+    @GetMapping("/completed")
+    public Page<CompletedQuiz> getUserCompleted(@RequestParam(defaultValue = "0") int page,
+                                                @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userRepository
+                .findUserByEmail(userDetails.getUsername())
+                .orElseThrow(() ->new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<CompletedQuiz> pageQuiz =
+
     }
 
 
