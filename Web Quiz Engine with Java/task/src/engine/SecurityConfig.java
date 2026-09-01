@@ -18,6 +18,7 @@ public class SecurityConfig {
             .csrf(configurer -> configurer.disable()) // for POST requests via Postman
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
+                    .requestMatchers("/error").permitAll()
                     .requestMatchers(HttpMethod.POST, "/actuator/shutdown").permitAll() //for hyperskill tester
                     .requestMatchers("/api/quizzes/**").authenticated()
                     .anyRequest().denyAll()

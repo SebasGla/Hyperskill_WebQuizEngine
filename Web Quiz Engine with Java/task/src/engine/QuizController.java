@@ -67,6 +67,7 @@ public class QuizController {
     public ResponseEntity<Void> deleteQuiz(@PathVariable int id,@AuthenticationPrincipal UserDetails userDetails){
         Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new QuizNotFoundException(id));
         if (quiz.getAuthor().getEmail() == userDetails.getUsername()){
+            quizRepository.delete(quiz);
             return ResponseEntity.noContent().build();
         }
         else {
