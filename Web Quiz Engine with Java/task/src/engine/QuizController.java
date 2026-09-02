@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,11 +21,13 @@ public class QuizController {
     private final int pageSize = 10;
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
+    private final CompletedQuizRepository completedQuizRepository;
 
     //Constuctor Injektion
-    public QuizController(QuizRepository quizRepository, UserRepository userRepository){
+    public QuizController(QuizRepository quizRepository, UserRepository userRepository, CompletedQuizRepository completedQuizRepository){
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;
+        this.completedQuizRepository = completedQuizRepository;
     }
 
     @PostMapping
@@ -58,9 +61,17 @@ public class QuizController {
     }
 
     @PostMapping("/{id}/solve")
-    public ResponseEntity<AnswerResponse> postAnswer(@PathVariable int id,@Valid @RequestBody AnswerReceive reqAns){
+    public ResponseEntity<AnswerResponse> postAnswer(@PathVariable int id,@Valid @RequestBody AnswerReceive reqAns,
+                                                     @AuthenticationPrincipal UserDetails userDetails){
         Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new QuizNotFoundException(id));
+        User currentUser = userRepository
+                .findUserByEmail(userDetails.getUsername())
+                .orElseThrow(() ->new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
         AnswerResponse dto = new AnswerResponse(quiz.checkAnswer(reqAns.answerReceived()));
+        if (dto.success()){
+            completedQuizRepository.save(new CompletedQuiz(quiz.getId(), currentUser ));
+        }
         return ResponseEntity.ok(dto);
     }
 
@@ -83,10 +94,9 @@ public class QuizController {
                 .findUserByEmail(userDetails.getUsername())
                 .orElseThrow(() ->new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("completedAdd").descending());
 
-        Page<CompletedQuiz> pageQuiz =
-
+        return   completedQuizRepository.findBySolver(currentUser,pageable);
     }
 
 

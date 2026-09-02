@@ -17,9 +17,6 @@ public class User {
     private String password;
     private String authority;
 
-    @ElementCollection
-    private List<CompletedQuiz> completedQuizzes;
-
     public Integer getId() {
         return id;
     }
@@ -52,11 +49,4 @@ public class User {
         this.authority = authority;
     }
 
-    public void completeQuiz(int quizId, String dateTime){
-        this.completedQuizzes.add(new CompletedQuiz(quizId, dateTime));
-    }
-
-    public List<CompletedQuiz> getCompletedQuizzes() {
-        return completedQuizzes;
-    }
 }
