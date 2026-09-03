@@ -94,7 +94,7 @@ public class QuizController {
                 .findUserByEmail(userDetails.getUsername())
                 .orElseThrow(() ->new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("completedAdd").descending());
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("completedAt").descending());
 
         return   completedQuizRepository.findBySolver(currentUser,pageable);
     }

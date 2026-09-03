@@ -1,6 +1,7 @@
 package engine;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -11,9 +12,11 @@ public class CompletedQuiz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Integer id;
 
     @Column(nullable = false)
+    @JsonProperty("id")
     private Integer quizId;
 
     @Column(nullable = false)
@@ -56,7 +59,7 @@ public class CompletedQuiz {
         this.completedAt = completedAt;
     }
 
-    public User getUser() {
+    public User getSolver() {
         return solver;
     }
 
